@@ -1,5 +1,10 @@
+import { createAction } from "redux-act";
+
 import { createActionFlow } from "../helpers";
-// import { createAction } from "redux-act";
 
 // load lottery
 export const loadLotteryFlow = createActionFlow("load lottery");
+
+// select slot
+export const selectSlot = createActionFlow("select slot");
+

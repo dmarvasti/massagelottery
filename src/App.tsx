@@ -22,6 +22,8 @@ interface AppStateProps {
   slots: Slot[];
   updateAuthd: (user: any) => void;
   loadLottery: () => void;
+  selectSlot: (slotId: string) => void;
+  selectedSlotId: string;
 }
 
 // import { hot } from "react-hot-loader";
@@ -72,7 +74,10 @@ class AppBase extends React.Component<AppStateProps> {
           onLogin={this.onLogin} 
           onLogout={this.onLogout} />
 
-        <Slots slots={this.props.slots} />
+        <Slots 
+          slots={this.props.slots} 
+          selectSlot={this.props.selectSlot}
+          selectedSlotId={this.props.selectedSlotId} />
 
         <Switch>
           <Route exact path="/home"  component={Home} />
@@ -90,14 +95,16 @@ class AppBase extends React.Component<AppStateProps> {
 const mapStateToProps = (state: StoreShape): any => {
   return {
     authd: state.auth,
-    slots: state.lottery && state.lottery.lottery && state.lottery.lottery.slots || []
+    slots: state.lottery && state.lottery.lottery && state.lottery.lottery.slots || [],
+    selectedSlotId: state.lottery.selectedSlotId
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): any => {
   return {
     updateAuthd: (user) => dispatch(authActions.updateAuthd(user)),
-    loadLottery: () => dispatch(lotteryActions.loadLotteryFlow.try())
+    loadLottery: () => dispatch(lotteryActions.loadLotteryFlow.try()),
+    selectSlot: (slotId) => dispatch(lotteryActions.selectSlot.try({slotId})),
   };
 };
 

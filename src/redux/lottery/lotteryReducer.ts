@@ -26,10 +26,31 @@ const handlers: Handlers<Partial<LotteryShape>> = {
       loadLotteryFlowStep: FlowStep.Failed
     });
   },
+
+  [actions.selectSlot.start.toString()]: (state) => {
+    return mergeState(state, {
+      selectSlotFlowStep: FlowStep.Started
+    });
+  },
+
+  [actions.selectSlot.success.toString()]: (state, selectedSlotId) => {
+    return mergeState(state, {
+      selectSlotFlowStep: FlowStep.Success,
+      selectedSlotId
+    });
+  },
+
+  [actions.selectSlot.failed.toString()]: (state) => {
+    return mergeState(state, {
+      selectSlotFlowStep: FlowStep.Failed,
+    });
+  },
 };
 
 const initialState: Partial<LotteryShape> = {
-  loadLotteryFlowStep: FlowStep.Unknown
+  loadLotteryFlowStep: FlowStep.Unknown,
+  selectSlotFlowStep: FlowStep.Unknown,
+  selectedSlotId: null
 };
 
 export default createReducer<Partial<LotteryShape>>(handlers, initialState);

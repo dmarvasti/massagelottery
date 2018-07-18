@@ -10,7 +10,7 @@ import * as lotteryActions from "./lotteryActions";
 
 export function* doLoadLotteryFlow() {
   
-  const lotteryId = "3";
+  const lotteryId = 3;
 
   try {
     yield put(lotteryActions.loadLotteryFlow.start());
@@ -26,11 +26,28 @@ export function* doLoadLotteryFlow() {
   }
 };
 
+/**
+ * 
+ * @param action 
+ */
+export function* doSelectSlotFlow(action) {
+ 
+  const { slotId } = action.payload;
 
+  try {
+    yield put(lotteryActions.selectSlot.start());
 
+    const response = yield call(UsersApi.registerSlot, {
+      slotId
+    });
 
-
-
+    yield put(lotteryActions.selectSlot.success(slotId));
+  } catch(e) {
+    yield put(lotteryActions.selectSlot.failed());
+  } finally {
+    yield put(lotteryActions.selectSlot.done());
+  }
+};
 
 
 
@@ -40,5 +57,7 @@ export function* doLoadLotteryFlow() {
 export default function* lotterySaga() {
   yield [
     takeLatest(lotteryActions.loadLotteryFlow.try, doLoadLotteryFlow),
+    takeLatest(lotteryActions.selectSlot.try, doSelectSlotFlow),
+    
   ];
 }
