@@ -1,6 +1,9 @@
 /* tslint:disable */
 import "./App.css";
 import Callback from "./auth/Callback";
+import Header from "./components/Header";
+import Slots from "./components/Slots";
+import { Slot } from "./generated/api"
 
 import * as React from "react";
 import { Route, Switch } from "react-router";
@@ -9,12 +12,16 @@ import Home from "./components/Home";
 import { connect } from "react-redux";
 import { Dispatch } from 'redux';
 import * as authActions from "./redux/auth/authActions";
+import * as lotteryActions from "./redux/lottery/lotteryActions";
+
 import { StoreShape } from "./redux/shape/storeShape";
 import { AuthShape } from "./redux/auth/authShape";
 
 interface AppStateProps {
   authd: AuthShape;
+  slots: Slot[];
   updateAuthd: (user: any) => void;
+  loadLottery: () => void;
 }
 
 // import { hot } from "react-hot-loader";
@@ -37,6 +44,7 @@ class AppBase extends React.Component<AppStateProps> {
     auth.logout();
   }
   
+  
   public componentDidMount() {
     if (auth.isAuthenticated()) {
       const user = auth.getUser();
@@ -44,6 +52,10 @@ class AppBase extends React.Component<AppStateProps> {
         user,
         isAuthd: true
       });
+
+      // load lottery
+      
+      this.props.loadLottery();
     } else {
       this.props.updateAuthd({
         isAuthd: false
@@ -55,20 +67,12 @@ class AppBase extends React.Component<AppStateProps> {
 
     return (
       <div>
-        {
-          this.props.authd.isAuthd ? (
-            <div>
-              Welcome {this.props.authd.user.name} <strong>{ this.props.authd.isAdmin ? `(Administrator)` : ``}</strong> <span onClick={this.onLogout}>(logout now)</span>
-              <br/><img width="50" src={this.props.authd.user.picture} />
-            </div>
+        <Header 
+          authd={this.props.authd} 
+          onLogin={this.onLogin} 
+          onLogout={this.onLogout} />
 
-          ) : (
-            <div>
-              Hi - please <span onClick={this.onLogin}>login</span>
-
-            </div>
-          )
-        }
+        <Slots slots={this.props.slots} />
 
         <Switch>
           <Route exact path="/home"  component={Home} />
@@ -85,13 +89,15 @@ class AppBase extends React.Component<AppStateProps> {
 
 const mapStateToProps = (state: StoreShape): any => {
   return {
-    authd: state.auth
+    authd: state.auth,
+    slots: state.lottery && state.lottery.lottery && state.lottery.lottery.slots || []
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): any => {
   return {
     updateAuthd: (user) => dispatch(authActions.updateAuthd(user)),
+    loadLottery: () => dispatch(lotteryActions.loadLotteryFlow.try())
   };
 };
 
