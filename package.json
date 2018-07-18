@@ -5,6 +5,9 @@
   "dependencies": {
     "auth0-js": "^9.7.2",
     "history": "^4.7.2",
+    "jwt-decode": "^2.2.0",
+    "lodash.includes": "^4.3.0",
+    "lodash.reduce": "^4.6.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
@@ -12,13 +15,16 @@
     "react-router-redux": "5.0.0-alpha.8",
     "react-scripts-ts": "2.16.0",
     "redux": "^4.0.0",
+    "redux-act": "^1.7.4",
     "redux-saga": "^0.16.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
+    "build:production": "react-scripts-ts build --env-file=env.production",
     "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "deploy": "npm run build:production && aws s3 sync build/ s3://massagelottery"
   },
   "devDependencies": {
     "@types/history": "^4.6.2",

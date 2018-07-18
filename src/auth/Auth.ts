@@ -1,5 +1,6 @@
 /* tslint:disable */
 import auth0 from "auth0-js";
+import * as JWT from 'jwt-decode';
 // import * as H from "history";
 
 // import { AUTH_CONFIG } from "./auth0-variables";
@@ -9,7 +10,7 @@ export default class Auth {
     audience: "https://massagelottery.auth0.com/userinfo",   
     clientID: "C21tApWyLxPrDwrcHx86bLKdx1gWW8kg",   
     domain: 'massagelottery.auth0.com',
-    redirectUri: 'http://localhost:3000/callback',
+    redirectUri: `${process.env.REACT_APP_AUTH_REDIRECT_URI}`,
     responseType: 'token id_token',
     scope: 'openid profile email'
   });
@@ -33,10 +34,11 @@ export default class Auth {
         window.location.href='/'
         
       } else if (err) {
-        window.location.href='/'       
+        // deal with this later
+        // window.location.href='/'       
         // H.replace('/home');
         // console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+        // alert(`Error: ${err.error}. Check the console for further details.`);
       }
     });
   }
@@ -48,7 +50,21 @@ export default class Auth {
     localStorage.removeItem('expires_at');
     // navigate to the home route
     // H.replace('/home');
-    window.location.href='/home'
+    window.location.href='/'
+  }
+
+  public getUser() {
+    if (this.isAuthenticated() && localStorage['id_token']) {
+      const {name, email, picture} =  JWT(localStorage.getItem('id_token'));
+
+      return {
+        name,
+        email,
+        picture
+      }
+    } else {
+      return null;
+    }
   }
 
   public isAuthenticated() {
@@ -71,8 +87,7 @@ export default class Auth {
     localStorage.setItem('expires_at', expiresAt);
     // navigate to the home route
     // H.replace('/home');
-    window.location.href='/home'
-    
+    window.location.href='/'
   }
 
 }

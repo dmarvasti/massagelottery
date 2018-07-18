@@ -6,7 +6,7 @@ import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 
-import App from "./App";
+import { App } from "./App";
 import configureStore from "./redux/configureStore";
 
   // import registerServiceWorker from './registerServiceWorker';
@@ -17,6 +17,7 @@ import configureStore from "./redux/configureStore";
     {...(window as any).__APP_STATE__}
   );
 
+  
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
