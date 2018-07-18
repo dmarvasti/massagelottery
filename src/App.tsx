@@ -1,19 +1,56 @@
-import * as React from 'react';
-import './App.css';
+/* tslint:disable */
+import "./App.css";
+import Callback from "./auth/Callback";
 
-import logo from './logo.svg';
+import * as React from "react";
+import { Route, Switch } from "react-router";
+import Auth from "./auth/Auth";
+import Home from "./components/Home";
+
+// import { hot } from "react-hot-loader";
+// import logo from './logo.svg';
+
+const auth = new Auth();
+
+const handleAuthentication = (props: any) => {
+  if (/access_token|id_token|error/.test(props.location.hash)) {
+    auth.handleAuthentication();
+  }
+}
 
 class App extends React.Component {
+  public onLogin = (): void => {
+    auth.login();
+  }
+
+  public onLogout = (): void => {
+    auth.logout();
+  }
+  
   public render() {
+    const isAuthd = auth.isAuthenticated();
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-         asdfasdfasdf To get started, get a massage from Yoav <code>src/App.tsx</code> and save to reload.
-        </p>
+      <div>
+        Welcome you are 
+        {
+          isAuthd ? (
+            <div>logged in <span onClick={this.onLogout}>(logout now)</span></div>
+          ) : (
+            <div>
+              logged out <span onClick={this.onLogin}>login</span>
+
+            </div>
+          )
+        }
+
+        <Switch>
+          <Route exact path="/home"  component={Home} />
+          <Route exact path="/callback"  render={(props) => {
+            handleAuthentication(props);
+            return <Callback {...props} />
+          }} />
+        </Switch>
       </div>
     );
   }
