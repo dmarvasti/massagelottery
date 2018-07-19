@@ -119,6 +119,7 @@ class AppBase extends React.Component<AppStateProps, AppState> {
                 selectedSlotId={this.props.selectedSlotId}
                 isSelecting={this.props.isSelecting} 
                 isFinished={this.props.isFinished}
+                isAdmin={this.props.authd.isAdmin}
                 />
             )
           }

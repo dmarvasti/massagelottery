@@ -7,6 +7,8 @@ import { AuthShape } from "./authShape";
 
 const admins: string[] = [
   "david.marvasti@wework.com",
+  "dmarvasti@gmail.com",
+  
   "yoav.ilan@wework.com",
   "michael.smith@wework.com"
 ]

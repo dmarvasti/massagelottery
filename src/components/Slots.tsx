@@ -15,6 +15,7 @@ import Pluralize from 'react-pluralize'
 interface SlotsProps {
   slots: Slot[];
   selectSlot: (slotId: string | undefined) => void;
+  isAdmin: boolean;
   isSelecting: boolean;
   isFinished: boolean;
   selectedSlotId: string;
@@ -59,9 +60,31 @@ class SlotsBase extends React.Component<SlotsProps> {
 
                   <Col className={"slots--meta"} xs={this.props.isFinished ? 26 : 24}>
                     <div className={"item"}>{ format(new Date(slot.startTime), "ddd, h:mm A") }</div>
-                    <Tag className={"item"} color="blue">
-                      <Pluralize singular="person" count={slot.entryCount} /> signed up
-                    </Tag>
+                    {
+                      this.props.isFinished ? (
+                        <Tag className={"item"} color="volcano">
+                          {
+                            this.props.isAdmin && (
+                              `Winner: ${slot.winner}`
+                            )
+                          }
+
+                          {
+                            !this.props.isAdmin && (
+                              <div>
+                                <Pluralize singular="person" plural="people" count={slot.entryCount} /> entered
+                              </div>  
+                              
+                            )
+                          }
+                        </Tag>
+                      ) : (
+                        <Tag className={"item"} color="blue">
+                          <Pluralize singular="person" plural="people" count={slot.entryCount} /> entered
+                        </Tag>
+                      )
+                    }
+                    
                   </Col>
               </List.Item>
               </div>
