@@ -23,7 +23,6 @@ export interface FetchAPI { (url: string, init?: any): Promise<any>; }
 
 const BASE_PATH = "https://virtserver.swaggerhub.com/rcohen-ww/MassageLottery/1.0.0".replace(/\/+$/, "");
 // const BASE_PATH = "http://206.189.225.97".replace(/\/+$/, "");
-
 export interface FetchArgs {
   url: string;
   options: any;
@@ -45,6 +44,7 @@ export interface InlineResponse200 {
 
 export interface Lottery {
   "id"?: number;
+  "location"?: string;
   "isFinished"?: boolean;
   "slots"?: Array<Slot>;
 }
@@ -89,10 +89,18 @@ export const AdminsApiFetchParamCreator = {
   /**
    * 
    * @summary generate lottery results
+   * @param isFinished 
    */
-  executeLottery(options?: any): FetchArgs {
+  executeLottery(params: {  "isFinished": boolean; }, options?: any): FetchArgs {
+      // verify required parameter "isFinished" is set
+      if (params["isFinished"] == null) {
+          throw new Error("Missing required parameter isFinished when calling executeLottery");
+      }
       const baseUrl = `/lottery`;
       let urlObj = url.parse(baseUrl, true);
+      urlObj.query = assign({}, urlObj.query, {
+          "isFinished": params["isFinished"],
+      });
       let fetchOptions: RequestInit = assign({}, { method: "PATCH" }, options);
 
       let contentTypeHeader: Dictionary<string> = {};
@@ -129,9 +137,10 @@ export const AdminsApiFp = {
   /**
    * 
    * @summary generate lottery results
+   * @param isFinished 
    */
-  executeLottery(options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
-      const fetchArgs = AdminsApiFetchParamCreator.executeLottery(options);
+  executeLottery(params: { "isFinished": boolean;  }, options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<any> {
+      const fetchArgs = AdminsApiFetchParamCreator.executeLottery(params, options);
       return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
           return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
               if (response.status >= 200 && response.status < 300) {
@@ -158,9 +167,10 @@ export class AdminsApi extends BaseAPI {
   /**
    * 
    * @summary generate lottery results
+   * @param isFinished 
    */
-  executeLottery(options?: any) {
-      return AdminsApiFp.executeLottery(options)(this.fetch, this.basePath);
+  executeLottery(params: {  "isFinished": boolean; }, options?: any) {
+      return AdminsApiFp.executeLottery(params, options)(this.fetch, this.basePath);
   }
 };
 
@@ -179,9 +189,10 @@ export const AdminsApiFactory = function (fetch?: FetchAPI, basePath?: string) {
       /**
        * 
        * @summary generate lottery results
+       * @param isFinished 
        */
-      executeLottery(options?: any) {
-          return AdminsApiFp.executeLottery(options)(fetch, basePath);
+      executeLottery(params: {  "isFinished": boolean; }, options?: any) {
+          return AdminsApiFp.executeLottery(params, options)(fetch, basePath);
       },
   };
 };

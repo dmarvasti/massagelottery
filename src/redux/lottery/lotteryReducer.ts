@@ -45,6 +45,26 @@ const handlers: Handlers<Partial<LotteryShape>> = {
       selectSlotFlowStep: FlowStep.Failed,
     });
   },
+
+
+  [actions.loadLotterySelectionStateFlow.start.toString()]: (state) => {
+    return mergeState(state, {
+      selectSlotFlowStep: FlowStep.Started
+    });
+  },
+
+  [actions.loadLotterySelectionStateFlow.success.toString()]: (state, selectedSlotId) => {
+    return mergeState(state, {
+      selectSlotFlowStep: FlowStep.Success,
+      selectedSlotId
+    });
+  },
+
+  [actions.loadLotterySelectionStateFlow.failed.toString()]: (state) => {
+    return mergeState(state, {
+      selectSlotFlowStep: FlowStep.Failed,
+    });
+  },
 };
 
 const initialState: Partial<LotteryShape> = {

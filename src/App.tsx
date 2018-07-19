@@ -2,8 +2,9 @@
 import "./App.css";
 import Callback from "./auth/Callback";
 import Header from "./components/Header";
-import Slots from "./components/Slots";
+import { Slots } from "./components/Slots";
 import { Slot } from "./generated/api"
+import { FlowStep } from "./redux/helpers";
 
 import * as React from "react";
 import { Route, Switch } from "react-router";
@@ -23,7 +24,9 @@ interface AppStateProps {
   updateAuthd: (user: any) => void;
   loadLottery: () => void;
   selectSlot: (slotId: string) => void;
+  isSelecting: boolean;
   selectedSlotId: string;
+  className?: string;  
 }
 
 // import { hot } from "react-hot-loader";
@@ -68,7 +71,7 @@ class AppBase extends React.Component<AppStateProps> {
   public render() {
 
     return (
-      <div>
+      <div className={this.props.className}>
         <Header 
           authd={this.props.authd} 
           onLogin={this.onLogin} 
@@ -77,7 +80,8 @@ class AppBase extends React.Component<AppStateProps> {
         <Slots 
           slots={this.props.slots} 
           selectSlot={this.props.selectSlot}
-          selectedSlotId={this.props.selectedSlotId} />
+          selectedSlotId={this.props.selectedSlotId}
+          isSelecting={this.props.isSelecting} />
 
         <Switch>
           <Route exact path="/home"  component={Home} />
@@ -91,12 +95,12 @@ class AppBase extends React.Component<AppStateProps> {
   }
 }
 
-
 const mapStateToProps = (state: StoreShape): any => {
   return {
     authd: state.auth,
     slots: state.lottery && state.lottery.lottery && state.lottery.lottery.slots || [],
-    selectedSlotId: state.lottery.selectedSlotId
+    selectedSlotId: state.lottery.selectedSlotId,
+    isSelecting: state.lottery.selectSlotFlowStep === FlowStep.Started
   };
 };
 

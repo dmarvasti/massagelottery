@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { AuthShape } from "../redux/auth/authShape";
+import { Avatar } from 'antd';
 
 // Redux provided props via mapStateToProps
 interface HeaderProps {
@@ -19,7 +20,7 @@ class Header extends React.Component<HeaderProps> {
           this.props.authd.isAuthd ? (
             <div>
               Welcome {this.props.authd.user.name} <strong>{ this.props.authd.isAdmin ? `(Administrator)` : ``}</strong> <span onClick={this.props.onLogout}>(logout now)</span>
-              <br/><img width="50" src={this.props.authd.user.picture} />
+              <Avatar size="large" src={this.props.authd.user.picture} />
             </div>
 
           ) : (

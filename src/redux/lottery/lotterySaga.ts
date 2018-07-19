@@ -1,19 +1,18 @@
-/* tslint:disable */
 
 import { call, put, takeLatest } from "redux-saga/effects";
 import { AdminsApi, UsersApi } from "../../utils/api";
 
 import * as lotteryActions from "./lotteryActions";
 
+const lotteryId = 3;
 
 
 
 export function* doLoadLotteryFlow() {
   
-  const lotteryId = 3;
-
   try {
     yield put(lotteryActions.loadLotteryFlow.start());
+    yield put(lotteryActions.loadLotterySelectionStateFlow.try());
 
     const response = yield call(UsersApi.getLottery, {
       lotteryId
@@ -33,7 +32,7 @@ export function* doLoadLotteryFlow() {
 export function* doSelectSlotFlow(action) {
  
   const { slotId } = action.payload;
-
+  
   try {
     yield put(lotteryActions.selectSlot.start());
 
@@ -50,14 +49,28 @@ export function* doSelectSlotFlow(action) {
 };
 
 
+export function* doLoadLotterySelectionStateFlow(action) {
+  
+  try {
+    yield put(lotteryActions.loadLotterySelectionStateFlow.start());
 
+    const response = yield call(UsersApi.lotterySelectionState, {
+      lotteryId
+    });
 
+    yield put(lotteryActions.loadLotterySelectionStateFlow.success(response));
+  } catch(e) {
+    yield put(lotteryActions.loadLotterySelectionStateFlow.failed());
+  } finally {
+    yield put(lotteryActions.loadLotterySelectionStateFlow.done());
+  }
+}
 
 
 export default function* lotterySaga() {
   yield [
     takeLatest(lotteryActions.loadLotteryFlow.try, doLoadLotteryFlow),
     takeLatest(lotteryActions.selectSlot.try, doSelectSlotFlow),
-    
+    takeLatest(lotteryActions.loadLotterySelectionStateFlow.try, doLoadLotterySelectionStateFlow),
   ];
 }

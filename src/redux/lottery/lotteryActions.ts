@@ -8,3 +8,5 @@ export const loadLotteryFlow = createActionFlow("load lottery");
 // select slot
 export const selectSlot = createActionFlow("select slot");
 
+// load lottery selection state
+export const loadLotterySelectionStateFlow = createActionFlow("load lottery selection state");
