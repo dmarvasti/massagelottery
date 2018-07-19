@@ -6,7 +6,7 @@ import { AdminsApi, UsersApi } from "../../utils/api";
 
 import * as lotteryActions from "./lotteryActions";
 
-const lotteryId = 8;
+const lotteryId = 11;
 
 
 
@@ -43,6 +43,7 @@ export function* doLoadExecuteLotteryFlow() {
       }
     });
     yield put(lotteryActions.loadExecuteLotteryFlow.success(response));
+    yield put(lotteryActions.loadLotteryFlow.try());
   } catch(e) {
     yield put(lotteryActions.loadExecuteLotteryFlow.failed());
   } finally {

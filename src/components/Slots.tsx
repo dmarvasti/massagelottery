@@ -34,7 +34,7 @@ class SlotsBase extends React.Component<SlotsProps> {
             dataSource={this.props.slots}
             renderItem={slot => (
               <div onClick={() => {
-                this.props.selectSlot(slot.id);
+                !this.props.isFinished && this.props.selectSlot(slot.id);
               }}>
               <List.Item 
                 className={this.props.isSelecting ? "selecting" : ''}
