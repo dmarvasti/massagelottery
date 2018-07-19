@@ -53,7 +53,9 @@ const handleAuthentication = (props: any) => {
 
 class AppBase extends React.Component<AppStateProps, AppState> {
   
-  constructur(props) {
+  constructor(props) {
+    super(props)
+    
     this.state = {
       giphy: {}
     }
@@ -98,40 +100,14 @@ class AppBase extends React.Component<AppStateProps, AppState> {
 
     return (
       <div className={this.props.className}>
-        { this.props.authd.isAuthd && (
-            <LotteryHeader 
-            authd={this.props.authd} 
-            onLogin={this.onLogin} 
-            onLogout={this.onLogout}
-            onExecuteLottery={this.props.loadExecuteLottery} />
-          )
-        }
+        <LotteryHeader 
+          authd={this.props.authd} 
+          giphy={this.state.giphy}
+          onLogin={this.onLogin} 
+          onLogout={this.onLogout}
+          onExecuteLottery={this.props.loadExecuteLottery} />
 
         <Content>
-          {
-            !this.props.authd.isAuthd && (
-              <Row type="flex" gutter={5} justify="center" className={"splash"}>
-                <Col xs={24} md={12}>
-                  <h1>Massage Lottery</h1>
-                  <Button type="primary" onClick={this.onLogin}>LOGIN</Button><br/><br/>
-
-                  <Media query={{ maxWidth: 599 }}>
-                    {matches =>
-                      matches ? (
-                        <img src={this.state && this.state.giphy ? this.state.giphy.fixed_width_downsampled_url
-                          : ""} />
-                        
-                      ) : (
-                        <img src={this.state  && this.state.giphy ? this.state.giphy.image_url : ""} />
-                        
-                      )
-                    }
-                  </Media>
-                </Col>
-              </Row>
-            )
-          }
-
           {
             this.props.slots.length > 0 && (
               <Slots 
@@ -189,7 +165,11 @@ export const AppConnected = connect<any, any, any>(
 
 export const App = styled(AppConnected)`
   .splash {
-    padding: 20px;
+    padding: 10px 20px;
     text-align: center;
+
+    button + button {
+      margin-left: 10px;
+    }
   }
 `
