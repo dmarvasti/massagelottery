@@ -21,6 +21,7 @@ import { Button, Layout, Row, Col } from "antd";
 import * as fetch from "isomorphic-fetch";
 import styled from "styled-components";
 import Media from "react-media";
+import * as includes from "lodash.includes";
 
 const { Content } = Layout;
 
@@ -59,9 +60,9 @@ class AppBase extends React.Component<AppStateProps, AppState> {
     super(props)
     
     this.state = {
-      giphy: {}
+      giphy: {},
     }
-    
+   
   }
   
   public onLogin = (): void => {
@@ -99,6 +100,10 @@ class AppBase extends React.Component<AppStateProps, AppState> {
     })
   }
 
+  public componentDidUpdate() {
+    this.getIsWinnerStatus();
+  }
+
   public render() {
 
     return (
@@ -110,6 +115,7 @@ class AppBase extends React.Component<AppStateProps, AppState> {
           onLogout={this.onLogout}
           onExecuteLottery={this.props.loadExecuteLottery} 
           isFinished={this.props.isFinished}
+          getIsWinnerStatus={this.getIsWinnerStatus}
           />
 
         <Content>
@@ -122,6 +128,7 @@ class AppBase extends React.Component<AppStateProps, AppState> {
                 isSelecting={this.props.isSelecting} 
                 isFinished={this.props.isFinished}
                 isAdmin={this.props.authd.isAdmin}
+                authd={this.props.authd}                 
                 />
             )
           }
@@ -145,6 +152,18 @@ class AppBase extends React.Component<AppStateProps, AppState> {
       }
       return response.json();
     })
+  }
+
+  public getIsWinnerStatus = (): boolean => {
+    if (this.props.authd && this.props.isFinished && this.props.slots.length > 0) {
+      const winners = this.props.slots.map((slot: Slot) => {
+        return slot.winner;
+      })
+
+      return includes(winners, this.props.authd.user.name);    
+    } else {
+      return false;
+    }
   }
 } 
 

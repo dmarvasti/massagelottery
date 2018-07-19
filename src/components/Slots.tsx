@@ -10,6 +10,7 @@ import { LotteryShape } from "../redux/lottery/lotteryShape";
 import { Slot } from "../generated/api"
 import { Button, Icon, List, Row, Col, Tag } from 'antd';
 import Pluralize from 'react-pluralize'
+import { AuthShape } from "../redux/auth/authShape";
 
 // Redux provided props via mapStateToProps
 interface SlotsProps {
@@ -20,6 +21,7 @@ interface SlotsProps {
   isFinished: boolean;
   selectedSlotId: string;
   className?: string;
+  authd: AuthShape;
 }
 
 class SlotsBase extends React.Component<SlotsProps> {

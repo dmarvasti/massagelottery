@@ -15,7 +15,8 @@ interface HeaderProps {
   className?: string;
   onLogin: () => void;
   onLogout: () => void;
-  onExecuteLottery: () => void;  
+  onExecuteLottery: () => void; 
+  getIsWinnerStatus: () => boolean; 
 }
 
 const { Header } = Layout;
@@ -33,9 +34,12 @@ class LotteryHeaderBase extends React.Component<HeaderProps> {
         <Row type="flex" justify="center" className={"splash"}>
           <Col xs={24} md={this.props.authd.isAuthd ? 14 : 24}>
             <h1>
-              Massage Lottery 
               {
-                this.props.isFinished && <Tag color="red">Lottery Closed</Tag>
+                this.props.getIsWinnerStatus() ? `You've Won ${this.props.authd.user.name}!` : `Massage Lottery`
+              }
+              
+              {
+                this.props.isFinished && !this.props.getIsWinnerStatus() && <Tag color="red">Lottery Closed</Tag>
               }
             </h1>
            
@@ -47,7 +51,15 @@ class LotteryHeaderBase extends React.Component<HeaderProps> {
                   <Media query={{ maxWidth: 599 }}>
                     {matches =>
                       matches && this.props.giphy ? (
-                        <img src={this.props.giphy.fixed_width_downsampled_url} />
+                        <div>
+                          {
+                            this.props.getIsWinnerStatus() ? (
+                              <img src="https://media.giphy.com/media/3oEjHD9ICBwRNdwHXq/giphy-downsized.gif" />                              
+                            ) : (
+                              <img src={this.props.giphy.fixed_width_downsampled_url} />                              
+                            )
+                          }
+                        </div>
                         
                       ) : (
                         <img src={this.props.giphy.image_url} />
@@ -61,10 +73,28 @@ class LotteryHeaderBase extends React.Component<HeaderProps> {
                   <Media query={{ maxWidth: 599 }}>
                     {matches =>
                       matches && this.props.giphy ? (
-                        <img src={this.props.giphy.fixed_width_downsampled_url} />
+                        <div>
+                          {
+                            this.props.getIsWinnerStatus() ? (
+                              <img width={200} src="https://media.giphy.com/media/3oEjHD9ICBwRNdwHXq/giphy-downsized.gif" />                              
+                            ) : (
+                              <img src={this.props.giphy.fixed_width_downsampled_url} />                              
+                            )
+                          }
+                        </div>
                         
                       ) : (
-                        <img src={this.props.giphy ? this.props.giphy.fixed_height_downsampled_url : ""} />
+                        <div>
+                          {
+                            this.props.getIsWinnerStatus() ? (
+                              <img src="https://media.giphy.com/media/3oEjHD9ICBwRNdwHXq/giphy-downsized.gif" />                              
+                            ) : (
+                              <img src={this.props.giphy ? this.props.giphy.fixed_height_downsampled_url : ""} />                              
+                            )
+                          }
+                        </div>
+
+
                       )
                     }
                   </Media>
