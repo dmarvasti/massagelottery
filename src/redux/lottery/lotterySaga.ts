@@ -1,7 +1,9 @@
 
 /* tslint:disable */
 
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, race, take, takeLatest } from "redux-saga/effects";
+import { delay } from "redux-saga";
+
 import { AdminsApi, UsersApi } from "../../utils/api";
 
 import * as lotteryActions from "./lotteryActions";
@@ -50,6 +52,17 @@ export function* doLoadExecuteLotteryFlow() {
     yield put(lotteryActions.loadExecuteLotteryFlow.done());
   }
 };
+
+
+/**
+ * Poll lottery worker
+ */
+export function* doLotteryPolling(action) {
+  while (true) {
+    yield call(delay, 4000);
+    yield put(lotteryActions.loadLotteryFlow.try());   
+  }
+}
 
 
 /**
@@ -104,5 +117,6 @@ export default function* lotterySaga() {
     takeLatest(lotteryActions.loadExecuteLotteryFlow.try, doLoadExecuteLotteryFlow),
     takeLatest(lotteryActions.selectSlot.try, doSelectSlotFlow),
     takeLatest(lotteryActions.loadLotterySelectionStateFlow.try, doLoadLotterySelectionStateFlow),
+    takeLatest(lotteryActions.startLotteryPolling, doLotteryPolling),
   ];
 }

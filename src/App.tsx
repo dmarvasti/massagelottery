@@ -30,6 +30,7 @@ interface AppStateProps {
   updateAuthd: (user: any) => void;
   loadLottery: () => void;
   loadExecuteLottery: () => void;
+  startLotteryPolling: () => void;
   selectSlot: (slotId: string) => void;
   isSelecting: boolean;
   isFinished: boolean;
@@ -82,6 +83,9 @@ class AppBase extends React.Component<AppStateProps, AppState> {
 
       // load lottery
       this.props.loadLottery();
+
+      // start polling
+      this.props.startLotteryPolling();
     } else {
       this.props.updateAuthd({
         isAuthd: false
@@ -93,8 +97,6 @@ class AppBase extends React.Component<AppStateProps, AppState> {
         giphy: response.data        
       })
     })
-    
-
   }
 
   public render() {
@@ -144,7 +146,7 @@ class AppBase extends React.Component<AppStateProps, AppState> {
       return response.json();
     })
   }
-}
+} 
 
 const mapStateToProps = (state: StoreShape): any => {
   return {
@@ -161,6 +163,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): any => {
     updateAuthd: (user) => dispatch(authActions.updateAuthd(user)),
     loadLottery: () => dispatch(lotteryActions.loadLotteryFlow.try()),
     loadExecuteLottery: () => dispatch(lotteryActions.loadExecuteLotteryFlow.try()),
+    startLotteryPolling: () => dispatch(lotteryActions.startLotteryPolling()),
     selectSlot: (slotId) => dispatch(lotteryActions.selectSlot.try({slotId})),
   };
 };
