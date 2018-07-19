@@ -1,3 +1,6 @@
+/* tslint:disable */
+
+
 import { createReducer, Handlers } from "redux-act";
 
 import { Lottery } from "../../generated/api";
@@ -49,26 +52,46 @@ const handlers: Handlers<Partial<LotteryShape>> = {
 
   [actions.loadLotterySelectionStateFlow.start.toString()]: (state) => {
     return mergeState(state, {
-      selectSlotFlowStep: FlowStep.Started
+      loadLotterySelectionStateFlowStep: FlowStep.Started
     });
   },
 
   [actions.loadLotterySelectionStateFlow.success.toString()]: (state, selectedSlotId) => {
     return mergeState(state, {
-      selectSlotFlowStep: FlowStep.Success,
+      loadLotterySelectionStateFlowStep: FlowStep.Success,
       selectedSlotId
     });
   },
 
   [actions.loadLotterySelectionStateFlow.failed.toString()]: (state) => {
     return mergeState(state, {
-      selectSlotFlowStep: FlowStep.Failed,
+      loadLotterySelectionStateFlowStep: FlowStep.Failed,
+    });
+  },
+
+  [actions.loadExecuteLotteryFlow.start.toString()]: (state) => {
+    return mergeState(state, {
+      loadExecuteLotteryFlowStep: FlowStep.Started
+    });
+  },
+
+  [actions.loadExecuteLotteryFlow.success.toString()]: (state) => {
+    return mergeState(state, {
+      loadExecuteLotteryFlowStep: FlowStep.Success,
+    });
+  },
+
+  [actions.loadExecuteLotteryFlow.failed.toString()]: (state) => {
+    return mergeState(state, {
+      loadExecuteLotteryFlowStep: FlowStep.Failed
     });
   },
 };
 
 const initialState: Partial<LotteryShape> = {
   loadLotteryFlowStep: FlowStep.Unknown,
+  loadLotterySelectionStateFlowStep: FlowStep.Unknown,  
+  loadExecuteLotteryFlowStep: FlowStep.Unknown,
   selectSlotFlowStep: FlowStep.Unknown,
   selectedSlotId: null
 };

@@ -17,7 +17,7 @@ import configureStore from "./redux/configureStore";
     {...(window as any).__APP_STATE__}
   );
 
-  
+
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>

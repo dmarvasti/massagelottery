@@ -3,19 +3,22 @@
 import * as React from 'react';
 import { AuthShape } from "../redux/auth/authShape";
 import { Avatar } from 'antd';
+import { Button, Layout } from 'antd';
 
 // Redux provided props via mapStateToProps
 interface HeaderProps {
   authd: AuthShape
   onLogin: () => void;
   onLogout: () => void;
+  onExecuteLottery: () => void;  
 }
 
+const { Header } = Layout;
 
-class Header extends React.Component<HeaderProps> {
+class LotteryHeader extends React.Component<HeaderProps> {
   public render() {
     return (
-      <div>
+      <Header>
         {
           this.props.authd.isAuthd ? (
             <div>
@@ -29,9 +32,15 @@ class Header extends React.Component<HeaderProps> {
             </div>
           )
         }
-      </div>
+
+        {
+          this.props.authd.isAdmin && (
+              <Button onClick={this.props.onExecuteLottery}>Execute Lottery</Button>
+          )
+        }
+      </Header>
     );
   }
 }
 
-export default Header;
+export default LotteryHeader;

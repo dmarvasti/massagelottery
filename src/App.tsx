@@ -1,7 +1,7 @@
 /* tslint:disable */
 import "./App.css";
 import Callback from "./auth/Callback";
-import Header from "./components/Header";
+import LotteryHeader from "./components/Header";
 import { Slots } from "./components/Slots";
 import { Slot } from "./generated/api"
 import { FlowStep } from "./redux/helpers";
@@ -17,12 +17,16 @@ import * as lotteryActions from "./redux/lottery/lotteryActions";
 
 import { StoreShape } from "./redux/shape/storeShape";
 import { AuthShape } from "./redux/auth/authShape";
+import { Button, Layout } from "antd";
+
+const { Content } = Layout;
 
 interface AppStateProps {
   authd: AuthShape;
   slots: Slot[];
   updateAuthd: (user: any) => void;
   loadLottery: () => void;
+  loadExecuteLottery: () => void;
   selectSlot: (slotId: string) => void;
   isSelecting: boolean;
   selectedSlotId: string;
@@ -49,7 +53,6 @@ class AppBase extends React.Component<AppStateProps> {
     auth.logout();
   }
   
-  
   public componentDidMount() {
     if (auth.isAuthenticated()) {
       const user = auth.getUser();
@@ -59,7 +62,6 @@ class AppBase extends React.Component<AppStateProps> {
       });
 
       // load lottery
-      
       this.props.loadLottery();
     } else {
       this.props.updateAuthd({
@@ -72,19 +74,34 @@ class AppBase extends React.Component<AppStateProps> {
 
     return (
       <div className={this.props.className}>
-        <Header 
-          authd={this.props.authd} 
-          onLogin={this.onLogin} 
-          onLogout={this.onLogout} />
+        { this.props.authd.isAuthd && (
+            <LotteryHeader 
+            authd={this.props.authd} 
+            onLogin={this.onLogin} 
+            onLogout={this.onLogout}
+            onExecuteLottery={this.props.loadExecuteLottery} />
+          )
+        }
 
-        <Slots 
-          slots={this.props.slots} 
-          selectSlot={this.props.selectSlot}
-          selectedSlotId={this.props.selectedSlotId}
-          isSelecting={this.props.isSelecting} />
+        <Content>
+          {
+            !this.props.authd.isAuthd && (
+              <Button onClick={this.onLogin}>LOGIN</Button>
+            )
+          }
+
+          {
+            this.props.slots.length > 0 && (
+              <Slots 
+                slots={this.props.slots} 
+                selectSlot={this.props.selectSlot}
+                selectedSlotId={this.props.selectedSlotId}
+                isSelecting={this.props.isSelecting} />
+            )
+          }
+        </Content>  
 
         <Switch>
-          <Route exact path="/home"  component={Home} />
           <Route exact path="/callback"  render={(props) => {
             handleAuthentication(props);
             return <Callback {...props} />
@@ -108,6 +125,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): any => {
   return {
     updateAuthd: (user) => dispatch(authActions.updateAuthd(user)),
     loadLottery: () => dispatch(lotteryActions.loadLotteryFlow.try()),
+    loadExecuteLottery: () => dispatch(lotteryActions.loadExecuteLotteryFlow.try()),
     selectSlot: (slotId) => dispatch(lotteryActions.selectSlot.try({slotId})),
   };
 };

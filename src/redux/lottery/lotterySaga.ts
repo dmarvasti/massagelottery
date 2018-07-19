@@ -1,10 +1,12 @@
 
+/* tslint:disable */
+
 import { call, put, takeLatest } from "redux-saga/effects";
 import { AdminsApi, UsersApi } from "../../utils/api";
 
 import * as lotteryActions from "./lotteryActions";
 
-const lotteryId = 3;
+const lotteryId = 7;
 
 
 
@@ -17,6 +19,7 @@ export function* doLoadLotteryFlow() {
     const response = yield call(UsersApi.getLottery, {
       lotteryId
     });
+    
     yield put(lotteryActions.loadLotteryFlow.success(response));
   } catch(e) {
     yield put(lotteryActions.loadLotteryFlow.failed());
@@ -24,6 +27,28 @@ export function* doLoadLotteryFlow() {
     yield put(lotteryActions.loadLotteryFlow.done());
   }
 };
+
+/**
+ * 
+ */
+export function* doLoadExecuteLotteryFlow() {
+  
+  try {
+    yield put(lotteryActions.loadExecuteLotteryFlow.start());
+
+    const response = yield call(AdminsApi.executeLottery, {
+      "lottery": {
+        "isFinished": true
+      }
+    });
+    yield put(lotteryActions.loadExecuteLotteryFlow.success(response));
+  } catch(e) {
+    yield put(lotteryActions.loadExecuteLotteryFlow.failed());
+  } finally {
+    yield put(lotteryActions.loadExecuteLotteryFlow.done());
+  }
+};
+
 
 /**
  * 
@@ -35,12 +60,16 @@ export function* doSelectSlotFlow(action) {
   
   try {
     yield put(lotteryActions.selectSlot.start());
-
+    
     const response = yield call(UsersApi.registerSlot, {
-      slotId
+      "slot": {
+        "isSelected": true
+      },  
+      "slotId": slotId,
     });
 
     yield put(lotteryActions.selectSlot.success(slotId));
+    yield put(lotteryActions.loadLotteryFlow.try());
   } catch(e) {
     yield put(lotteryActions.selectSlot.failed());
   } finally {
@@ -54,11 +83,11 @@ export function* doLoadLotterySelectionStateFlow(action) {
   try {
     yield put(lotteryActions.loadLotterySelectionStateFlow.start());
 
-    const response = yield call(UsersApi.lotterySelectionState, {
+    const { selectedSlotId } = yield call(UsersApi.lotterySelectionState, {
       lotteryId
     });
 
-    yield put(lotteryActions.loadLotterySelectionStateFlow.success(response));
+    yield put(lotteryActions.loadLotterySelectionStateFlow.success( selectedSlotId ));
   } catch(e) {
     yield put(lotteryActions.loadLotterySelectionStateFlow.failed());
   } finally {
@@ -70,6 +99,7 @@ export function* doLoadLotterySelectionStateFlow(action) {
 export default function* lotterySaga() {
   yield [
     takeLatest(lotteryActions.loadLotteryFlow.try, doLoadLotteryFlow),
+    takeLatest(lotteryActions.loadExecuteLotteryFlow.try, doLoadExecuteLotteryFlow),
     takeLatest(lotteryActions.selectSlot.try, doSelectSlotFlow),
     takeLatest(lotteryActions.loadLotterySelectionStateFlow.try, doLoadLotterySelectionStateFlow),
   ];

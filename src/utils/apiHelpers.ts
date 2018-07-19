@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  *
  */
@@ -6,7 +8,8 @@ export const getRequestOptions = (headers = {}) => {
     credentials: "same-origin",
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${localStorage["id_token"]}`,     
+      'Content-Type': 'application/json',
     }
   };
 };
