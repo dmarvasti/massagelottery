@@ -17,7 +17,10 @@ import * as lotteryActions from "./redux/lottery/lotteryActions";
 
 import { StoreShape } from "./redux/shape/storeShape";
 import { AuthShape } from "./redux/auth/authShape";
-import { Button, Layout } from "antd";
+import { Button, Layout, Row, Col } from "antd";
+import * as fetch from "isomorphic-fetch";
+import styled from "styled-components";
+import Media from "react-media";
 
 const { Content } = Layout;
 
@@ -33,6 +36,10 @@ interface AppStateProps {
   className?: string;  
 }
 
+interface AppState {
+  giphy: any;
+}
+
 // import { hot } from "react-hot-loader";
 // import logo from './logo.svg';
 
@@ -44,7 +51,15 @@ const handleAuthentication = (props: any) => {
   }
 }
 
-class AppBase extends React.Component<AppStateProps> {
+class AppBase extends React.Component<AppStateProps, AppState> {
+  
+  constructur(props) {
+    this.state = {
+      giphy: {}
+    }
+    
+  }
+  
   public onLogin = (): void => {
     auth.login();
   }
@@ -53,6 +68,7 @@ class AppBase extends React.Component<AppStateProps> {
     auth.logout();
   }
   
+
   public componentDidMount() {
     if (auth.isAuthenticated()) {
       const user = auth.getUser();
@@ -68,6 +84,14 @@ class AppBase extends React.Component<AppStateProps> {
         isAuthd: false
       });
     }
+
+    this.getMassageGif().then((response) => {
+      this.setState({
+        giphy: response.data        
+      })
+    })
+    
+
   }
 
   public render() {
@@ -86,7 +110,25 @@ class AppBase extends React.Component<AppStateProps> {
         <Content>
           {
             !this.props.authd.isAuthd && (
-              <Button onClick={this.onLogin}>LOGIN</Button>
+              <Row type="flex" gutter={5} justify="center" className={"splash"}>
+                <Col xs={24} md={12}>
+                  <h1>Massage Lottery</h1>
+                  <Button type="primary" onClick={this.onLogin}>LOGIN</Button><br/><br/>
+
+                  <Media query={{ maxWidth: 599 }}>
+                    {matches =>
+                      matches ? (
+                        <img src={this.state && this.state.giphy ? this.state.giphy.fixed_width_downsampled_url
+                          : ""} />
+                        
+                      ) : (
+                        <img src={this.state  && this.state.giphy ? this.state.giphy.image_url : ""} />
+                        
+                      )
+                    }
+                  </Media>
+                </Col>
+              </Row>
             )
           }
 
@@ -110,6 +152,16 @@ class AppBase extends React.Component<AppStateProps> {
       </div>
     );
   }
+
+  private getMassageGif = (): Promise<any> => {
+    return fetch('http://api.giphy.com/v1/gifs/random?api_key=527dd91de16a417b9c556d4e1f371bb2&tag=massage')
+    .then(function(response) {
+      if (response.status >= 400) {
+        throw new Error("Bad response from server");
+      }
+      return response.json();
+    })
+  }
 }
 
 const mapStateToProps = (state: StoreShape): any => {
@@ -130,7 +182,14 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): any => {
   };
 };
 
-export const App = connect<any, any, any>(
+export const AppConnected = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps,
 )(AppBase);
+
+export const App = styled(AppConnected)`
+  .splash {
+    padding: 20px;
+    text-align: center;
+  }
+`

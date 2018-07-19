@@ -47,7 +47,7 @@ class SlotsBase extends React.Component<SlotsProps> {
 
                 <Col className={"slots--meta"} xs={24}>
 
-                  <div className={"item"}>{ format(new Date(slot.startTime), "dddd, h:m A") }</div>
+                  <div className={"item"}>{ format(new Date(slot.startTime), "dddd, h:mm A") }</div>
                   <Tag className={"item"} color="blue">
                     <Pluralize singular="person" count={slot.entryCount} /> signed up
                   </Tag>
