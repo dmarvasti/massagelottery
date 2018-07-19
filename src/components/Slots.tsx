@@ -16,6 +16,7 @@ interface SlotsProps {
   slots: Slot[];
   selectSlot: (slotId: string | undefined) => void;
   isSelecting: boolean;
+  isFinished: boolean;
   selectedSlotId: string;
   className?: string;
 }
@@ -32,27 +33,38 @@ class SlotsBase extends React.Component<SlotsProps> {
             size="small"
             dataSource={this.props.slots}
             renderItem={slot => (
-              <List.Item className={this.props.isSelecting ? "selecting" : ''}>
-                <Col className={"slots--actions"} xs={2}>
-                  <Button 
-                    type="primary"
-                    shape="circle"
-                    className={this.isSelected(slot.id) ? "selected" : "unselected" }
-                    icon={"check"}
-                    size="small"
-                    onClick={() => {
-                      this.props.selectSlot(slot.id);
-                  }}/>
-                </Col>
+              <div onClick={() => {
+                this.props.selectSlot(slot.id);
+              }}>
+              <List.Item 
+                className={this.props.isSelecting ? "selecting" : ''}
+                >
 
-                <Col className={"slots--meta"} xs={24}>
+                  {
+                    !this.props.isFinished && (
+                      <Col className={"slots--actions"} xs={2}>
+                      <Button 
+                        type="primary"
+                        shape="circle"
+                        className={this.isSelected(slot.id) ? "selected" : "unselected" }
+                        icon={"check"}
+                        size="small"
+                        onClick={() => {
+                          this.props.selectSlot(slot.id);
+                        }}
+                      />
+                    </Col>
+                    )
+                  }
 
-                  <div className={"item"}>{ format(new Date(slot.startTime), "dddd, h:mm A") }</div>
-                  <Tag className={"item"} color="blue">
-                    <Pluralize singular="person" count={slot.entryCount} /> signed up
-                  </Tag>
-                </Col>
+                  <Col className={"slots--meta"} xs={this.props.isFinished ? 26 : 24}>
+                    <div className={"item"}>{ format(new Date(slot.startTime), "ddd, h:mm A") }</div>
+                    <Tag className={"item"} color="blue">
+                      <Pluralize singular="person" count={slot.entryCount} /> signed up
+                    </Tag>
+                  </Col>
               </List.Item>
+              </div>
             )}
           />
         </Col>
@@ -71,6 +83,13 @@ class SlotsBase extends React.Component<SlotsProps> {
 export const Slots = styled(SlotsBase)`
   align-items: center;
   display: flex;
+  .ant-list-split .ant-list-item:last-child {
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .ant-list-item {
+    cursor: pointer;
+  }
 
   .slots--actions {
     button {

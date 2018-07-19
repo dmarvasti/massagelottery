@@ -10,6 +10,7 @@ import Media from "react-media";
 interface HeaderProps {
   authd: AuthShape
   giphy: any;
+  isFinished: boolean;
   onLogin: () => void;
   onLogout: () => void;
   onExecuteLottery: () => void;  
@@ -23,7 +24,7 @@ class LotteryHeader extends React.Component<HeaderProps> {
       <div>
 
         <Row type="flex" justify="center" className={"splash"}>
-          <Col xs={24} md={14}>
+          <Col xs={24} md={this.props.authd.isAuthd ? 14 : 24}>
             {
               this.props.authd.isAuthd && (
                 <Avatar size="large" src={this.props.authd.user.picture} />
@@ -74,7 +75,7 @@ class LotteryHeader extends React.Component<HeaderProps> {
                 <div>
                   <Button type="primary" icon="logout" onClick={this.props.onLogout}>Logout</Button>               
                   {
-                    this.props.authd.isAdmin && (
+                    this.props.authd.isAdmin && !this.props.isFinished && (
                       <Button type="danger" icon="notification" onClick={this.props.onExecuteLottery}>Execute Lottery</Button>
                     )
                   }

@@ -32,6 +32,7 @@ interface AppStateProps {
   loadExecuteLottery: () => void;
   selectSlot: (slotId: string) => void;
   isSelecting: boolean;
+  isFinished: boolean;
   selectedSlotId: string;
   className?: string;  
 }
@@ -105,7 +106,9 @@ class AppBase extends React.Component<AppStateProps, AppState> {
           giphy={this.state.giphy}
           onLogin={this.onLogin} 
           onLogout={this.onLogout}
-          onExecuteLottery={this.props.loadExecuteLottery} />
+          onExecuteLottery={this.props.loadExecuteLottery} 
+          isFinished={this.props.isFinished}
+          />
 
         <Content>
           {
@@ -114,7 +117,9 @@ class AppBase extends React.Component<AppStateProps, AppState> {
                 slots={this.props.slots} 
                 selectSlot={this.props.selectSlot}
                 selectedSlotId={this.props.selectedSlotId}
-                isSelecting={this.props.isSelecting} />
+                isSelecting={this.props.isSelecting} 
+                isFinished={this.props.isFinished}
+                />
             )
           }
         </Content>  
@@ -145,7 +150,8 @@ const mapStateToProps = (state: StoreShape): any => {
     authd: state.auth,
     slots: state.lottery && state.lottery.lottery && state.lottery.lottery.slots || [],
     selectedSlotId: state.lottery.selectedSlotId,
-    isSelecting: state.lottery.selectSlotFlowStep === FlowStep.Started
+    isSelecting: state.lottery.selectSlotFlowStep === FlowStep.Started,
+    isFinished:  state.lottery && state.lottery.lottery && state.lottery.lottery.isFinished
   };
 };
 

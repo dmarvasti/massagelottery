@@ -6,7 +6,7 @@ import { AdminsApi, UsersApi } from "../../utils/api";
 
 import * as lotteryActions from "./lotteryActions";
 
-const lotteryId = 7;
+const lotteryId = 8;
 
 
 
@@ -37,6 +37,7 @@ export function* doLoadExecuteLotteryFlow() {
     yield put(lotteryActions.loadExecuteLotteryFlow.start());
 
     const response = yield call(AdminsApi.executeLottery, {
+      "lotteryId": lotteryId,
       "lottery": {
         "isFinished": true
       }
