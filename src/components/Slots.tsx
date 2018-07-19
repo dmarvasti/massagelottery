@@ -64,26 +64,38 @@ class SlotsBase extends React.Component<SlotsProps> {
                     <div className={"item"}>{ format(new Date(slot.startTime), "ddd, h:mm A") }</div>
                     {
                       this.props.isFinished ? (
-                        <Tag className={"item"} color="volcano">
+                        <div>
                           {
-                            this.props.isAdmin && (
-                              `Winner: ${slot.winner}`
+                            slot.entryCount > 0 && (
+                              <Tag className={"item"} color="volcano">
+                                {
+                                  this.props.isAdmin && (
+                                    `Winner: ${slot.winner}`
+                                  )
+                                }
+      
+                                {
+                                  !this.props.isAdmin && (
+                                    <div>
+                                      <Pluralize singular="person" plural="people" count={slot.entryCount} /> entered
+                                    </div>  
+                                    
+                                  )
+                                }
+                              </Tag>
                             )
                           }
-
-                          {
-                            !this.props.isAdmin && (
-                              <div>
-                                <Pluralize singular="person" plural="people" count={slot.entryCount} /> entered
-                              </div>  
-                              
-                            )
-                          }
-                        </Tag>
+                        </div>  
                       ) : (
-                        <Tag className={"item"} color="blue">
-                          <Pluralize singular="person" plural="people" count={slot.entryCount} /> entered
-                        </Tag>
+                        <div>
+                          {
+                            slot.entryCount > 0 && (
+                              <Tag className={"item"} color="blue">
+                                <Pluralize singular="person" plural="people" count={slot.entryCount} /> entered
+                              </Tag>
+                            )
+                          }
+                        </div>  
                       )
                     }
                     

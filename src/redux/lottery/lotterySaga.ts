@@ -8,7 +8,7 @@ import { AdminsApi, UsersApi } from "../../utils/api";
 
 import * as lotteryActions from "./lotteryActions";
 
-const lotteryId = 6;
+const lotteryId = 12;
 
 
 
